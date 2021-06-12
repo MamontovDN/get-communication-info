@@ -56,7 +56,7 @@ def main():
             "row_n",
         ],
     )
-    df.to_csv("result.csv", index=False)
+    df.to_csv("result_dmitry_mamontov.csv", index=False)
     conn.close()
 
 
