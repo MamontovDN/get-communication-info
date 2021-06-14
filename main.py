@@ -19,6 +19,7 @@ def main():
         """
             WITH user_sessions AS (
                 SELECT s.visitor_id,
+                       s.site_id,
                        COUNT(s.visitor_id) row_n,
                        Max(s.date_time)    session_date_time
                 FROM sessions s
@@ -26,7 +27,7 @@ def main():
                               ON s.visitor_id = c.visitor_id AND
                                  s.site_id = c.site_id
                 WHERE s.date_time <= c.date_time
-                GROUP BY s.visitor_id)
+                GROUP BY s.visitor_id, s.site_id)
             SELECT c.communication_id,
                    c.site_id,
                    c.visitor_id,
@@ -36,8 +37,10 @@ def main():
                    s.campaign_id,
                    us.row_n
             FROM communications c
-            LEFT JOIN user_sessions us ON us.visitor_id = c.visitor_id
-            LEFT JOIN sessions s ON us.visitor_id = s.visitor_id AND
+            LEFT JOIN user_sessions us ON us.visitor_id = c.visitor_id AND
+                                          us.site_id = c.site_id
+            LEFT JOIN sessions s ON c.visitor_id = s.visitor_id AND
+                                    c.site_id = s.site_id AND
                                     us.session_date_time = s.date_time
             ;
         """,
